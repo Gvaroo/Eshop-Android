@@ -104,4 +104,7 @@ class CartViewModel @Inject constructor(
     private fun showSnackbar(message: String) {
         _Message.value = message
     }
+    fun clearErrorMessage() {
+        _Message.value = null
+    }
 }

@@ -54,7 +54,7 @@ import androidx.compose.foundation.lazy.LazyColumn as LazyColumn
 @Composable
 fun ProfileScreen(navController: NavHostController) {
     val viewModel: CheckoutViewModel = hiltViewModel()
-    val authViewModel:AuthViewModel = hiltViewModel()
+    val authViewModel: AuthViewModel = hiltViewModel()
     val transactions by produceState<List<GetOrderHistoryDTO>?>(initialValue = null) {
         value = viewModel.getUserOrderHistory()
     }
@@ -121,7 +121,7 @@ fun ProfileScreen(navController: NavHostController) {
 
                         Column {
                             Text(
-                                text = userInfo[0] ,
+                                text = userInfo[0],
                                 color = Color.Black,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 20.sp
@@ -154,6 +154,7 @@ fun ProfileScreen(navController: NavHostController) {
         }
     }
 }
+
 
 
 

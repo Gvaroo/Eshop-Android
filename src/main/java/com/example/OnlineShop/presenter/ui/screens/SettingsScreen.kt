@@ -46,8 +46,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun SettingsScreen(navController: NavHostController) {
     val viewModel: AuthViewModel = hiltViewModel()
- val isDarkMode by rememberUpdatedState(newValue = viewModel.isDarkMode.value)
- val colorScheme = if (isDarkMode == true) DarkColorScheme else LightColorScheme
+    val isDarkMode by rememberUpdatedState(newValue = viewModel.isDarkMode.value)
+    val colorScheme = if (isDarkMode == true) DarkColorScheme else LightColorScheme
     MaterialTheme(
         colorScheme = colorScheme,
     ) {

@@ -1,6 +1,7 @@
 package com.example.OnlineShop.presenter.ui.screens
 
 import android.annotation.SuppressLint
+import android.os.Message
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -27,6 +31,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -56,6 +61,9 @@ fun CheckoutScreen(navController: NavHostController, totalPrice: Int) {
     val shippinginfo by ViewModel.shippingInfo.collectAsState()
     val message by ViewModel.Message.collectAsState()
 
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
     var cardNumber by remember { mutableStateOf("") }
     var expireDate by remember { mutableStateOf("") }
     var cvv by remember { mutableStateOf("") }
@@ -64,6 +72,19 @@ fun CheckoutScreen(navController: NavHostController, totalPrice: Int) {
     val isDarkMode by rememberUpdatedState(newValue = viewModel.isDarkMode.value)
 
     val colorScheme = if (isDarkMode == true) DarkColorScheme else LightColorScheme
+
+    SnackbarHost(
+        hostState = snackbarHostState,
+        modifier = Modifier.padding(16.dp),
+        snackbar = {
+            Snackbar(
+                action = {},
+                content = {
+                    Text(text = message ?: "error")
+                }
+            )
+        }
+    )
     MaterialTheme(
         colorScheme = colorScheme,
     ) {
@@ -171,12 +192,13 @@ fun CheckoutScreen(navController: NavHostController, totalPrice: Int) {
 
         )
         message?.let { message ->
-            Snackbar(
-                modifier = Modifier.padding(16.dp),
-                action = {
-                }
-            ) {
-                Text(text = message)
+            scope.launch {
+                snackbarHostState.currentSnackbarData?.dismiss()
+                snackbarHostState.showSnackbar(
+                    message = message,
+                    duration = SnackbarDuration.Short
+                )
+                viewModel.clearErrorMessage()
             }
         }
     }

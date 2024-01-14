@@ -138,5 +138,8 @@ suspend fun getProductReviews(productId: Int) {
      fun showSnackbar(message: String) {
         _errorMessage.value = message
     }
+    fun clearErrorMessage() {
+        _errorMessage.value = null
+    }
 
 }

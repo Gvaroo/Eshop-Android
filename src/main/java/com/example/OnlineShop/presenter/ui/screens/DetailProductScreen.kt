@@ -17,6 +17,9 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +29,7 @@ import androidx.compose.runtime.internal.isLiveLiteralsEnabled
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -47,6 +51,7 @@ import com.example.OnlineShop.presenter.view_model.ProductViewModel
 import com.example.OnlineShop.ui.theme.DarkColorScheme
 import com.example.OnlineShop.ui.theme.LightColorScheme
 import com.example.retrofit.presenter.view_model.AuthViewModel
+import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.Row as Row
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,10 +71,26 @@ import androidx.compose.foundation.layout.Row as Row
     val cartProductData: MutableList<CartDataDTO> = remember { mutableListOf() }
     var addToCartClicked by remember { mutableStateOf(false) }
 
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
     val viewModel: AuthViewModel = hiltViewModel()
     val isDarkMode by rememberUpdatedState(newValue = viewModel.isDarkMode.value)
 
     val colorScheme = if (isDarkMode == true) DarkColorScheme else LightColorScheme
+
+    SnackbarHost(
+        hostState = snackbarHostState,
+        modifier = Modifier.padding(16.dp),
+        snackbar = {
+            Snackbar(
+                action = {},
+                content = {
+                    Text(text = errorMessage ?: "error")
+                }
+            )
+        }
+    )
     MaterialTheme(
         colorScheme = colorScheme,
     ) {
@@ -174,21 +195,23 @@ import androidx.compose.foundation.layout.Row as Row
             }
         }
         errorMessage?.let { message ->
-            Snackbar(
-                modifier = Modifier.padding(16.dp),
-                action = {
-                }
-            ) {
-                Text(text = message)
+            scope.launch {
+                snackbarHostState.currentSnackbarData?.dismiss()
+                snackbarHostState.showSnackbar(
+                    message = message,
+                    duration = SnackbarDuration.Short
+                )
+                productViewModel.clearErrorMessage()
             }
         }
         message?.let { message ->
-            Snackbar(
-                modifier = Modifier.padding(16.dp),
-                action = {
-                }
-            ) {
-                Text(text = message)
+            scope.launch {
+                snackbarHostState.currentSnackbarData?.dismiss()
+                snackbarHostState.showSnackbar(
+                    message = message,
+                    duration = SnackbarDuration.Short
+                )
+                cartViewModel.clearErrorMessage()
             }
         }
     }

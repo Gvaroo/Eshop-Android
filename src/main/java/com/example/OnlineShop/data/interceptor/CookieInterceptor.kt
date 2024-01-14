@@ -16,7 +16,6 @@ class CookieInterceptor(private val context: Context) : Interceptor {
 
 
         val storedAccessToken = sharedPreferences.getString("access_token", "")
-        val fullname = sharedPreferences.getString("fullname", "")
         val newRequest = if (storedAccessToken?.isNotEmpty() == true) {
             request.newBuilder()
                 .header("Cookie", "access_token=$storedAccessToken")

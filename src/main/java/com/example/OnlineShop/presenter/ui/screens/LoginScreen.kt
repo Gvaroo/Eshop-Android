@@ -16,6 +16,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarData
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,12 +51,26 @@ import kotlinx.coroutines.launch
 fun LoginScreen(navController: NavHostController) {
     val viewModel: AuthViewModel = hiltViewModel()
     val coroutineScope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
     val errorMessage by viewModel.errorMessage
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val isDarkMode by rememberUpdatedState(newValue = viewModel.isDarkMode.value)
-    Log.d("isitdarkmooode",isDarkMode.toString())
     val colorScheme = if (isDarkMode == true) DarkColorScheme else LightColorScheme
+
+    SnackbarHost(
+        hostState = snackbarHostState,
+        modifier = Modifier.padding(16.dp),
+        snackbar = {
+            Snackbar(
+                action = {},
+                content = {
+                    Text(text = errorMessage ?: "error")
+                }
+            )
+        }
+    )
     MaterialTheme(
         colorScheme = colorScheme,
     ) {
@@ -182,13 +200,14 @@ fun LoginScreen(navController: NavHostController) {
             }
         }
         errorMessage?.let { message ->
-            Snackbar(
-                modifier = Modifier.padding(16.dp),
-                action = {
-                }
-            ) {
-                Text(text = message)
+            scope.launch {
+                snackbarHostState.currentSnackbarData?.dismiss()
+                snackbarHostState.showSnackbar(
+                    message = message,
+                    duration = SnackbarDuration.Short
+                )
+                viewModel.clearErrorMessage()
             }
         }
     }
-}
+    }

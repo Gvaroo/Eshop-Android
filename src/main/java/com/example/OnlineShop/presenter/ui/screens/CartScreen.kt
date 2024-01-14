@@ -91,8 +91,6 @@ fun CartScreen(navController: NavController) {
             },
             content = {
                 if (cartData.isNullOrEmpty()) {
-
-
                 } else {
                     Spacer(modifier = Modifier.height(12.dp))
                     Box(

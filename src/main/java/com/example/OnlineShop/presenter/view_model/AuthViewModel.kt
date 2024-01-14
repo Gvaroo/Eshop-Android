@@ -2,6 +2,7 @@ package com.example.retrofit.presenter.view_model
 
 import android.content.SharedPreferences
 import android.util.Log.d
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
@@ -26,8 +27,8 @@ class AuthViewModel @Inject constructor(
     val errorMessage: State<String?> get() = _errorMessage
     private val DARK_MODE_KEY = "dark_mode_key"
 
-    private val _isDarkMode = MutableLiveData<Boolean>()
-    val isDarkMode: LiveData<Boolean> get() = _isDarkMode
+    private val _isDarkMode = mutableStateOf(false)
+    val isDarkMode: State<Boolean> get() = _isDarkMode
 
     init {
         _isDarkMode.value = sharedPreferences.getBoolean(DARK_MODE_KEY, false)
@@ -163,5 +164,8 @@ class AuthViewModel @Inject constructor(
 
     private fun showSnackbar(message: String) {
         _errorMessage.value = message
+    }
+    fun clearErrorMessage() {
+        _errorMessage.value = null
     }
  }
