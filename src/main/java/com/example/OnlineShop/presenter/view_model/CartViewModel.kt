@@ -1,5 +1,6 @@
 package com.example.OnlineShop.presenter.view_model
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -78,6 +79,7 @@ class CartViewModel @Inject constructor(
 
         if (response.isSuccessful) {
             response.body()?.data?.let { showSnackbar(it) }
+            response.body()?.data?.toString()?.let { Log.d("!!!!!!", it) }
             viewModelScope.launch {
                 GetUserCartData()
             }
@@ -90,12 +92,11 @@ class CartViewModel @Inject constructor(
                     val errorMessage = jsonObject.getString("message")
                     showSnackbar(errorMessage)
                 } catch (e: JSONException) {
-                    // Handle JSON parsing error
+
                     e.printStackTrace()
                     showSnackbar("Error parsing JSON response")
                 }
             } else {
-                // Handle the case where errorResponse is null or empty
                 showSnackbar("Unknown error occurred")
             }
         }

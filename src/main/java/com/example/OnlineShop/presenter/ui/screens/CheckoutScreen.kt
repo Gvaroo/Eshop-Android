@@ -73,132 +73,127 @@ fun CheckoutScreen(navController: NavHostController, totalPrice: Int) {
 
     val colorScheme = if (isDarkMode == true) DarkColorScheme else LightColorScheme
 
-    SnackbarHost(
-        hostState = snackbarHostState,
-        modifier = Modifier.padding(16.dp),
-        snackbar = {
-            Snackbar(
-                action = {},
-                content = {
-                    Text(text = message ?: "error")
-                }
-            )
-        }
-    )
-    MaterialTheme(
-        colorScheme = colorScheme,
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
     ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text(text = "Checkout") },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = { navController.navigate("mainScreen") }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "Back"
-                            )
-                        }
-                    }
-                )
-            },
-            content = {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(
-                            start = 16.dp,
-                            end = 16.dp,
-                            top = it.calculateTopPadding(),
-                            bottom = 16.dp
-                        )
-                ) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-
-                        item {
-                            Text(
-                                text = "Shipping Information",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp,
-                                color = Color.DarkGray
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            ShippingInfoFields(
-                                shippingInfo = shippinginfo,
-                                onShippingInfoChange = {
-                                    ViewModel.updateShippingInfo(it)
-                                }
-                            )
-                        }
-
-
-                        item {
-                            Text(
-                                text = "Payment Information",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp,
-                                color = Color.DarkGray
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            PaymentInfoFields(
-                                cardNumber = cardNumber,
-                                onCardNumberChange = { cardNumber = it },
-                                expireDate = expireDate,
-                                onExpireDateChange = { expireDate = it },
-                                cvv = cvv,
-                                onCvvChange = { cvv = it }
-                            )
-                        }
-
-
-                        item {
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(
-                                text = "Total Price: $totalPrice $",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp,
-                                color = Color(0xFF2196F3)
-                            )
-                        }
-
-
-                        item {
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Button(
-                                onClick = {
-                                    ViewModel.viewModelScope.launch {
-                                        ViewModel.checkout(navController)
-                                    }
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(56.dp)
-                                    .padding(horizontal = 20.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = Color.White
-                                )
+        MaterialTheme(
+            colorScheme = colorScheme,
+        ) {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { Text(text = "Checkout") },
+                        navigationIcon = {
+                            IconButton(
+                                onClick = { navController.navigate("mainScreen") }
                             ) {
-                                Text(text = "Checkout")
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = "Back"
+                                )
+                            }
+                        }
+                    )
+                },
+                content = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(
+                                start = 16.dp,
+                                end = 16.dp,
+                                top = it.calculateTopPadding(),
+                                bottom = 16.dp
+                            )
+                    ) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+
+                            item {
+                                Text(
+                                    text = "Shipping Information",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 18.sp,
+                                    color = Color.DarkGray
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                ShippingInfoFields(
+                                    shippingInfo = shippinginfo,
+                                    onShippingInfoChange = {
+                                        ViewModel.updateShippingInfo(it)
+                                    }
+                                )
+                            }
+
+
+                            item {
+                                Text(
+                                    text = "Payment Information",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 18.sp,
+                                    color = Color.DarkGray
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                PaymentInfoFields(
+                                    cardNumber = cardNumber,
+                                    onCardNumberChange = { cardNumber = it },
+                                    expireDate = expireDate,
+                                    onExpireDateChange = { expireDate = it },
+                                    cvv = cvv,
+                                    onCvvChange = { cvv = it }
+                                )
+                            }
+
+
+                            item {
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "Total Price: $totalPrice $",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp,
+                                    color = Color(0xFF2196F3)
+                                )
+                            }
+
+
+                            item {
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Button(
+                                    onClick = {
+                                        ViewModel.viewModelScope.launch {
+                                            ViewModel.checkout(navController)
+                                        }
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(56.dp)
+                                        .padding(horizontal = 20.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        contentColor = Color.White
+                                    )
+                                ) {
+                                    Text(text = "Checkout")
+                                }
                             }
                         }
                     }
                 }
-            }
 
-        )
-        message?.let { message ->
-            scope.launch {
-                snackbarHostState.currentSnackbarData?.dismiss()
-                snackbarHostState.showSnackbar(
-                    message = message,
-                    duration = SnackbarDuration.Short
-                )
-                viewModel.clearErrorMessage()
+            )
+            message?.let { message ->
+                scope.launch {
+                    snackbarHostState.currentSnackbarData?.dismiss()
+                    snackbarHostState.showSnackbar(
+                        message = message,
+                        duration = SnackbarDuration.Short
+                    )
+                    viewModel.clearErrorMessage()
+                }
             }
         }
     }
